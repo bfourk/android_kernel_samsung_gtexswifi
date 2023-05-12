@@ -467,7 +467,7 @@ posix_acl_chmod(struct inode *inode, umode_t mode)
 	if (!inode->i_op->set_acl)
 		return -EOPNOTSUPP;
 
-	acl = get_acl(inode, ACL_TYPE_ACCESS);
+	acl = inode->i_op->get_acl(inode, ACL_TYPE_ACCESS);
 	if (IS_ERR_OR_NULL(acl))
 		return PTR_ERR(acl);
 
@@ -490,7 +490,7 @@ posix_acl_create(struct inode *dir, umode_t *mode,
 	if (S_ISLNK(*mode) || !IS_POSIXACL(dir))
 		goto no_acl;
 
-	p = get_acl(dir, ACL_TYPE_DEFAULT);
+	p = dir->i_op->get_acl(dir, ACL_TYPE_DEFAULT);
 	if (IS_ERR(p))
 		return PTR_ERR(p);
 
